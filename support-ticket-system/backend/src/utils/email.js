@@ -1,33 +1,14 @@
-import nodemailer from 'nodemailer'
-import dotenv from 'dotenv'
-dotenv.config()
+import { Resend } from 'resend'
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-})
+const resend = new Resend(process.env.RESEND_API_KEY)
 
-// Verify transporter on startup
-transporter.verify((error, success) => {
-  if (error) {
-    console.log('SMTP Error:', error.message)
-  } else {
-    console.log('✅ SMTP Server is ready to send emails')
-  }
-})
+// Use Resend's free test sender — no domain setup needed
+const FROM = 'Support System <onboarding@resend.dev>'
 
 export const sendTicketCreatedEmail = async (email, name, ticket) => {
   try {
-    const info = await transporter.sendMail({
-      from: `"Support System" <${process.env.SMTP_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: FROM,
       to: email,
       subject: `✅ Ticket Created: ${ticket.title}`,
       html: `
@@ -44,7 +25,12 @@ export const sendTicketCreatedEmail = async (email, name, ticket) => {
         </div>
       `
     })
-    console.log('✅ Ticket created email sent to:', email, info.messageId)
+
+    if (error) {
+      console.log('❌ Email error:', error.message)
+    } else {
+      console.log('✅ Ticket created email sent to:', email, data?.id)
+    }
   } catch (error) {
     console.log('❌ Email error:', error.message)
   }
@@ -52,8 +38,8 @@ export const sendTicketCreatedEmail = async (email, name, ticket) => {
 
 export const sendTicketClosedEmail = async (email, name, ticket) => {
   try {
-    const info = await transporter.sendMail({
-      from: `"Support System" <${process.env.SMTP_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: FROM,
       to: email,
       subject: `🔒 Ticket Closed: ${ticket.title}`,
       html: `
@@ -69,7 +55,12 @@ export const sendTicketClosedEmail = async (email, name, ticket) => {
         </div>
       `
     })
-    console.log('✅ Ticket closed email sent to:', email, info.messageId)
+
+    if (error) {
+      console.log('❌ Email error:', error.message)
+    } else {
+      console.log('✅ Ticket closed email sent to:', email, data?.id)
+    }
   } catch (error) {
     console.log('❌ Email error:', error.message)
   }
