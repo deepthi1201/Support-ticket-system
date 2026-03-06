@@ -28,8 +28,9 @@ app.use(express.json())
 app.use('/api/auth', authRoutes)
 app.use('/api/tickets', ticketRoutes)
 
-// Health check
+// Health check endpoints
 app.get('/', (req, res) => res.json({ message: '🚀 API is running!' }))
+app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }))
 
 // Socket.io
 io.on('connection', (socket) => {
@@ -41,4 +42,17 @@ io.on('connection', (socket) => {
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
-httpServer.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`))
+httpServer.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`)
+
+  // Keep-alive: ping self every 10 mins to prevent Render sleep
+  const BACKEND_URL = 'https://support-ticket-system-2-bpdt.onrender.com/'
+  setInterval(async () => {
+    try {
+      await fetch(BACKEND_URL)
+      console.log('✅ Keep-alive ping sent')
+    } catch (err) {
+      console.log('Keep-alive ping failed:', err.message)
+    }
+  }, 10 * 60 * 1000)
+})
