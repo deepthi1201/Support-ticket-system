@@ -12,12 +12,16 @@ dotenv.config()
 const app = express()
 const httpServer = createServer(app)
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://support-ticket-system-three-tau.vercel.app'
+]
+
 export const io = new Server(httpServer, {
-  cors: { origin: 'http://localhost:5173', methods: ['GET', 'POST', 'PUT', 'DELETE'] }
+  cors: { origin: allowedOrigins, methods: ['GET', 'POST', 'PUT', 'DELETE'] }
 })
 
-app.use(cors({ origin: 'http://localhost:5173' }))
-app.use(express.json())
+app.use(cors({ origin: allowedOrigins }))
 app.use(errorHandler)
 
 // Routes

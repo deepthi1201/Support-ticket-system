@@ -11,7 +11,7 @@ import TicketCard from '../components/TicketCard'
 import CreateTicketModal from '../components/CreateTicketModal'
 import TicketDetailModal from '../components/TicketDetailModal'
 
-const socket = io('http://localhost:5000')
+const socket = io('https://support-ticket-system-v04s.onrender.com')
 
 export default function Dashboard() {
   const { user } = useAuth()

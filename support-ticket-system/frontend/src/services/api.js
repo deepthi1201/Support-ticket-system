@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const BACKEND_URL = 'https://support-ticket-system-v04s.onrender.com/api'
+
 const api = axios.create({
-  baseURL: 'https://support-ticket-system-1-pk03.onrender.com/',
+  baseURL: BACKEND_URL,
 })
 
 api.interceptors.request.use((config) => {
