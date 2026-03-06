@@ -17,8 +17,8 @@ export const createTicket = async (req, res) => {
     // Real-time emit
     io.emit('ticket:created', ticket)
 
-    // Send email
-    await sendTicketCreatedEmail(req.user.email, req.user.name, ticket)
+    // Send email in background (non-blocking — won't slow down response)
+    sendTicketCreatedEmail(req.user.email, req.user.name, ticket).catch(console.error)
 
     res.status(201).json({ message: 'Ticket created successfully', ticket })
   } catch (error) {
@@ -94,9 +94,9 @@ export const updateTicketStatus = async (req, res) => {
     // Real-time emit
     io.emit('ticket:updated', ticket)
 
-    // Send email if closed
+    // Send email in background (non-blocking — won't slow down response)
     if (status === 'CLOSED') {
-      await sendTicketClosedEmail(req.user.email, req.user.name, ticket)
+      sendTicketClosedEmail(req.user.email, req.user.name, ticket).catch(console.error)
     }
 
     res.status(200).json({ message: 'Ticket updated successfully', ticket })
