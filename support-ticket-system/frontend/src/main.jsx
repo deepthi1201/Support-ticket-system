@@ -4,8 +4,10 @@ import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { startKeepAlive } from './services/keepAlive'
 import App from './App.jsx'
 import './index.css'
+startKeepAlive()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

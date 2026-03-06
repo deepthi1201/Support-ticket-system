@@ -11,7 +11,9 @@ import TicketCard from '../components/TicketCard'
 import CreateTicketModal from '../components/CreateTicketModal'
 import TicketDetailModal from '../components/TicketDetailModal'
 
-const socket = io('https://support-ticket-system-2-bpdt.onrender.com')
+const socket = io('https://support-ticket-system-2-bpdt.onrender.com', {
+  transports: ['websocket', 'polling']
+})
 
 export default function Dashboard() {
   const { user } = useAuth()
