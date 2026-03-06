@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BACKEND_URL = 'https://support-ticket-system-1-pk03.onrender.com/'
+const BACKEND_URL = 'https://support-ticket-system-1-pk03.onrender.com/api'
 
 const api = axios.create({
   baseURL: BACKEND_URL,
