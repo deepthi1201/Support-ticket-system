@@ -4,16 +4,29 @@ dotenv.config()
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
+  port: Number(process.env.SMTP_PORT),
+  secure: false,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+})
+
+// Verify transporter on startup
+transporter.verify((error, success) => {
+  if (error) {
+    console.log('SMTP Error:', error.message)
+  } else {
+    console.log('✅ SMTP Server is ready to send emails')
   }
 })
 
 export const sendTicketCreatedEmail = async (email, name, ticket) => {
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"Support System" <${process.env.SMTP_USER}>`,
       to: email,
       subject: `✅ Ticket Created: ${ticket.title}`,
@@ -31,14 +44,15 @@ export const sendTicketCreatedEmail = async (email, name, ticket) => {
         </div>
       `
     })
+    console.log('✅ Ticket created email sent to:', email, info.messageId)
   } catch (error) {
-    console.log('Email error:', error.message)
+    console.log('❌ Email error:', error.message)
   }
 }
 
 export const sendTicketClosedEmail = async (email, name, ticket) => {
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"Support System" <${process.env.SMTP_USER}>`,
       to: email,
       subject: `🔒 Ticket Closed: ${ticket.title}`,
@@ -55,7 +69,8 @@ export const sendTicketClosedEmail = async (email, name, ticket) => {
         </div>
       `
     })
+    console.log('✅ Ticket closed email sent to:', email, info.messageId)
   } catch (error) {
-    console.log('Email error:', error.message)
+    console.log('❌ Email error:', error.message)
   }
 }
