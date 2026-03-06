@@ -1,26 +1,17 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 import api from '../services/api'
 import toast from 'react-hot-toast'
 import { Mail, Lock, Eye, EyeOff, User, Ticket } from 'lucide-react'
-
-const inputStyle = {
-  width: '100%',
-  padding: '12px 12px 12px 42px',
-  borderRadius: '12px',
-  background: 'rgba(255,255,255,0.07)',
-  border: '1px solid rgba(255,255,255,0.1)',
-  color: 'white',
-  outline: 'none',
-  fontSize: '14px',
-}
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
+  const { isDark } = useTheme()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -37,38 +28,46 @@ export default function Register() {
     } finally { setLoading(false) }
   }
 
+  const inputStyle = {
+    width: '100%', padding: '12px 12px 12px 42px', borderRadius: '12px',
+    background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.03)',
+    border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+    color: isDark ? 'white' : '#111827', outline: 'none', fontSize: '14px',
+  }
+
   return (
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)',
+      background: isDark
+        ? 'linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)'
+        : 'linear-gradient(135deg, #f8faff 0%, #eef2ff 50%, #e8f0fe 100%)',
       padding: '20px', position: 'relative', overflow: 'hidden'
     }}>
-      {/* Blobs */}
       <div style={{ position: 'absolute', top: '10%', right: '10%', width: '300px', height: '300px',
         borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.3), transparent)', filter: 'blur(60px)' }} />
       <div style={{ position: 'absolute', bottom: '10%', left: '10%', width: '400px', height: '400px',
         borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.2), transparent)', filter: 'blur(80px)' }} />
 
       <div style={{ width: '100%', maxWidth: '420px', position: 'relative', zIndex: 1 }}>
-        {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{ width: '64px', height: '64px', borderRadius: '18px', margin: '0 auto 16px',
             background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Ticket size={30} color="white" />
           </div>
-          <h1 style={{ color: 'white', fontSize: '28px', fontWeight: '700', margin: 0 }}>Create account</h1>
-          <p style={{ color: '#9ca3af', marginTop: '8px', fontSize: '14px' }}>Start managing your support tickets</p>
+          <h1 style={{ color: isDark ? 'white' : '#111827', fontSize: '28px', fontWeight: '700', margin: 0 }}>Create account</h1>
+          <p style={{ color: isDark ? '#9ca3af' : '#6b7280', marginTop: '8px', fontSize: '14px' }}>Start managing your support tickets</p>
         </div>
 
-        {/* Card */}
         <div style={{
-          background: 'rgba(255,255,255,0.05)', borderRadius: '24px',
-          border: '1px solid rgba(255,255,255,0.1)', padding: '36px', backdropFilter: 'blur(10px)'
+          background: isDark ? 'rgba(255,255,255,0.05)' : 'white',
+          borderRadius: '24px',
+          border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'}`,
+          padding: '36px', backdropFilter: 'blur(10px)',
+          boxShadow: isDark ? 'none' : '0 20px 60px rgba(99,102,241,0.1)'
         }}>
           <form onSubmit={handleSubmit}>
-            {/* Name */}
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', color: '#d1d5db', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Full Name</label>
+              <label style={{ display: 'block', color: isDark ? '#d1d5db' : '#374151', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Full Name</label>
               <div style={{ position: 'relative' }}>
                 <User size={16} color="#6b7280" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
                 <input type="text" placeholder="John Doe" value={form.name}
@@ -76,9 +75,8 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Email */}
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', color: '#d1d5db', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Email</label>
+              <label style={{ display: 'block', color: isDark ? '#d1d5db' : '#374151', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Email</label>
               <div style={{ position: 'relative' }}>
                 <Mail size={16} color="#6b7280" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
                 <input type="email" placeholder="you@example.com" value={form.email}
@@ -86,9 +84,8 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Password */}
             <div style={{ marginBottom: '28px' }}>
-              <label style={{ display: 'block', color: '#d1d5db', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Password</label>
+              <label style={{ display: 'block', color: isDark ? '#d1d5db' : '#374151', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Password</label>
               <div style={{ position: 'relative' }}>
                 <Lock size={16} color="#6b7280" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
                 <input type={showPassword ? 'text' : 'password'} placeholder="Min. 6 characters" value={form.password}
@@ -101,7 +98,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Button */}
             <button type="submit" disabled={loading} style={{
               width: '100%', padding: '13px', borderRadius: '12px', border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
               background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white',
@@ -112,13 +108,12 @@ export default function Register() {
             </button>
           </form>
 
-          <p style={{ textAlign: 'center', color: '#9ca3af', marginTop: '24px', fontSize: '14px' }}>
+          <p style={{ textAlign: 'center', color: isDark ? '#9ca3af' : '#6b7280', marginTop: '24px', fontSize: '14px' }}>
             Already have an account?{' '}
             <Link to="/login" style={{ color: '#818cf8', textDecoration: 'none', fontWeight: '500' }}>Sign in</Link>
           </p>
         </div>
       </div>
-
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
