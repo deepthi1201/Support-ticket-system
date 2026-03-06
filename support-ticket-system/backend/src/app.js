@@ -21,8 +21,8 @@ export const io = new Server(httpServer, {
   cors: { origin: allowedOrigins, methods: ['GET', 'POST', 'PUT', 'DELETE'] }
 })
 
-app.use(cors({ origin: allowedOrigins }))
-app.use(errorHandler)
+app.use(cors({ origin: allowedOrigins, credentials: true }))
+app.use(express.json())
 
 // Routes
 app.use('/api/auth', authRoutes)
@@ -36,6 +36,9 @@ io.on('connection', (socket) => {
   console.log('User connected:', socket.id)
   socket.on('disconnect', () => console.log('User disconnected:', socket.id))
 })
+
+// Error handler - must be last
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
 httpServer.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`))
